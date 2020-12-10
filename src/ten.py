@@ -28,7 +28,6 @@ def get_instructions():
 def ten_part_one(puzzle_input):
   differences = []
   adapter_list = []
-  current_jolt = 0
   max_val = 0
   for i in range(len(puzzle_input)):
     if puzzle_input[i] - max_val <= 3:
@@ -44,7 +43,7 @@ def ten_part_one(puzzle_input):
   
   print(max_val)
   print(adapter_list)
-  current_jolt = adapter_list[-1] + 3
+  
   differences.append(3)
   
   new_dict = dict()
@@ -56,82 +55,41 @@ def ten_part_one(puzzle_input):
   print(new_dict)
   return new_dict[1]*new_dict[3]
 
-
-
 def ten_part_two(puzzle_input):
   
-  differences = []
-  adapter_list = []
-  current_jolt = 0
-  max_val = 0
-  for i in range(len(puzzle_input)):
-    if puzzle_input[i] - max_val <= 3:
-      # current_jolt = puzzle_input[i]
-      if adapter_list != []:
-        difference = puzzle_input[i] - adapter_list[-1]
-        differences.append(difference)
+  puzzle_input.insert(0, 0)
+  puzzle_input.insert(len(puzzle_input), puzzle_input[-1]+3)
+  
+  diffs = [j-i for i, j in zip(puzzle_input[:-1], puzzle_input[1:])] 
+  
+  blocks = []
+  one_count = 0
+  for i in range(len(diffs)):
+    if diffs[i] == 1:
+      one_count = one_count + 1
+    else:
+      if(one_count != 0):
+        blocks.append(one_count)
+      one_count = 0
+  multipliers = []
+  for ones in blocks:
+    if ones != 1:
+      if (ones == 2):
+        multipliers.append(2)
+        
+      elif (ones == 3):
+        multipliers.append(4)
+        
+      elif (ones == 4):
+        multipliers.append(7)
+        
       else:
-        differences.append(puzzle_input[i])
-      adapter_list.append(puzzle_input[i])
-    max_val = puzzle_input[i]
-    
-  current_jolt = adapter_list[-1] + 3
+        exit("PANIC")
+  
+  return math.prod(multipliers)
 
-  differences.append(3)
-  
-  existing_arrays = []
-  existing_arrays.append(adapter_list)
-  lengthOfStrings = len(adapter_list)
-  min_length = math.floor(adapter_list[-1]/3)
-  while lengthOfStrings >= min_length:
-    iterables = itertools.combinations(puzzle_input, lengthOfStrings)
-    for i in iterables:
-      i_list = list(i)
-      if i_list[-1] != adapter_list[-1]:
-        continue
-      differences = [j-i for i, j in zip(i_list[:-1], i_list[1:])]  # or use itertools.izip in py2k
-      if max(differences) > 3:
-        continue
-      if i_list[0] > 3:
-        continue
-
-      if i_list not in existing_arrays:
-        existing_arrays.append(i_list)
-
-    lengthOfStrings = lengthOfStrings - 1
-  # [print('{}'.format(i)) for i in existing_arrays]
-  return len(existing_arrays)
-  
-def ten_part_three(puzzle_input):
-  differences = []
-  adapter_list = []
-  
-  max_val = 0
-  for i in range(len(puzzle_input)):
-    if puzzle_input[i] - max_val <= 3:
-  
-      choices = []
-      for j in range(i+1, i+4):
-        if j > len(puzzle_input) - 1:
-          break
-        if (puzzle_input[j] - puzzle_input[i]) <= 3:
-          choices.append(puzzle_input[j])
-        else:
-          break
-      print(choices)
-      if adapter_list != []:
-        difference = puzzle_input[i] - adapter_list[-1]
-        differences.append(difference)
-      else:
-        differences.append(puzzle_input[i])
-      adapter_list.append(puzzle_input[i])
-    max_val = puzzle_input[i]
     
   
-  # print(max_val)
-  # print(adapter_list)
-  current_jolt = adapter_list[-1] + 3
-  differences.append(3)
 
 test_input = """16
 10
@@ -180,16 +138,17 @@ test_input2 = """28
 test_list = [y for y in (int(x.strip()) for x in test_input.splitlines())]
 test_list.sort()
 # print(ten_part_one(test_list))
-print(ten_part_three(test_list))
+print(ten_part_two(test_list))
 
 test_list2 = [y for y in (int(x.strip()) for x in test_input2.splitlines())]
 test_list2.sort()
 # print(ten_part_one(test_list2))
-# print(ten_part_three(test_list2))
+print(ten_part_two(test_list2))
+#19208
 
-
-# puzzle_input = get_instructions()
-# puzzle_input.sort()
+puzzle_input = get_instructions()
+puzzle_input.sort()
 # print(puzzle_input)
 # print(ten_part_one(puzzle_input))
-# 2414
+# # 2414
+print(ten_part_two(puzzle_input))
