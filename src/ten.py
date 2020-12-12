@@ -152,3 +152,4 @@ puzzle_input.sort()
 # print(ten_part_one(puzzle_input))
 # # 2414
 print(ten_part_two(puzzle_input))
+#21156911906816
